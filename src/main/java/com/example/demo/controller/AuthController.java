@@ -57,7 +57,7 @@ public class AuthController {
 
         //role setting
         //Note: sql query: INSERT INTO roles (name) VALUES ('ROLE_USER');
-        
+
         Role defaultRole = roleRepository.findRoleByName("ROLE_USER"); // Fetch the default user role
         if (defaultRole != null) {
             newUser.setRole(defaultRole);
@@ -82,8 +82,9 @@ public class AuthController {
         String jwt = jwtUtils.generateJwtToken(authentication);
 
         User user = userRepository.findByUsername(request.getUsername()).orElse(null);
+        String roleName = user.getRole() != null ? user.getRole().getName() : "No Role Assigned";
 
-        return ResponseEntity.ok(new JwtResponse(jwt,user.getId(),user.getUsername(),user.getEmail()));
+        return ResponseEntity.ok(new JwtResponse(jwt, user.getId(), user.getUsername(), user.getEmail(), roleName));
     }
     //---  
 }
