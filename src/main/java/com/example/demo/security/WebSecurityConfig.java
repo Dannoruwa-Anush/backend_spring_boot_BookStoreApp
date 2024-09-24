@@ -3,6 +3,7 @@ package com.example.demo.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -75,9 +76,30 @@ public class WebSecurityConfig {
             .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth ->
+                // Allow public access to authentication and registration endpoints
                 auth.requestMatchers("/auth/***").permitAll()
-                .requestMatchers("/book/***").permitAll()
-                .requestMatchers("/category/***").permitAll()
+                
+                //----- [Start : Book] ------------------------------------
+                // Allow both USER and ADMIN to access /book and /book/{id}
+                .requestMatchers("/book/**").hasAnyRole("USER", "ADMIN")
+
+                // Allow only ADMIN to perform save and update operations
+                .requestMatchers(HttpMethod.POST, "/book").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/book/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/book/**").hasRole("ADMIN")
+                //----- [End : Book] ------------------------------------
+
+
+                //----- [Start : Category] ------------------------------------
+                // Allow both USER and ADMIN to access /category and /category/{id}
+                .requestMatchers("/category/**").hasAnyRole("USER", "ADMIN")
+
+                // Allow only ADMIN to perform save and update operations
+                .requestMatchers(HttpMethod.POST, "/category").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/category/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/category/**").hasRole("ADMIN")
+                //----- [End : Category] ------------------------------------
+
                 .anyRequest().authenticated()
             );
 
