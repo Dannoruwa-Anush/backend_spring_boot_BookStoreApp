@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,57 +16,56 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.entity.User;
-import com.example.demo.service.UserService;
-
-import java.util.List;
+import com.example.demo.entity.Order;
+import com.example.demo.service.OrderService;
 
 @CrossOrigin(origins = "*")
-@RequestMapping("/user") //Servers entire controller under /user URI
 @RestController
-public class UserController {
+@RequestMapping("/order") //Servers entire controller under /order URI
+public class OrderController {
+    
     @Autowired
-    UserService userService;
+    OrderService orderService;
 
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers(){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getAllUsers());
+     @GetMapping
+    public ResponseEntity<List<Order>> getAllOrders(){
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.getAllOrders());
     }
     //---
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable long id){
+    public ResponseEntity<Order> getOrderById(@PathVariable long id){
         try {
-            //Try to find user by id
-            User user = userService.getUserById(id);
-            return ResponseEntity.status(HttpStatus.OK).body(user);
+            //Try to find order by id
+            Order order = orderService.getOrderById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(order);
 
         } catch (NoSuchElementException e) {
-            //If there is no user by id, throw NoSuchElementException from UserServiceIml.java
+            //If there is no order by id, throw NoSuchElementException from OrderServiceIml.java
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
     //---
 
     @PostMapping
-    public ResponseEntity<User> saveUser(@RequestBody User user){
+    public ResponseEntity<Order> saveOrder(@RequestBody Order order){
           try {
-            //Try to find user by id
-            User userControll = userService.saveUser(user);
-            return ResponseEntity.status(HttpStatus.CREATED).body(userControll);
+            //Try to find order by id
+            Order orderControll = orderService.createOrder(order);
+            return ResponseEntity.status(HttpStatus.CREATED).body(orderControll);
 
         } catch (NoSuchElementException e) {
-            //If there is no user by id, throw NoSuchElementException from UserServiceIml.java
+            //If there is no order by id, throw NoSuchElementException from OrdererviceIml.java
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
     //---
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable long id, @RequestBody User user){
+    public ResponseEntity<Order> updateOrder(@PathVariable long id, @RequestBody Order order){
         try {
-            User updateUser = userService.updateUser(id, user);
-            return ResponseEntity.status(HttpStatus.OK).body(updateUser);
+            Order updateOrder = orderService.updateOrder(id, order);
+            return ResponseEntity.status(HttpStatus.OK).body(updateOrder);
         }catch (NoSuchElementException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
@@ -76,14 +76,13 @@ public class UserController {
     //---
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable long id){
+    public ResponseEntity<Void> deleteOrder(@PathVariable long id){
         try {
-            userService.deleteUser(id);
+            orderService.deleteOrder(id);
             return ResponseEntity.status(HttpStatus.OK).body(null);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-
     }
     //---
 }

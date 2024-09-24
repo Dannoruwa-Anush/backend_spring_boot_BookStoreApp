@@ -3,6 +3,7 @@ package com.example.demo.service;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.User;
@@ -11,13 +12,20 @@ import com.example.demo.repository.UserRepository;
 @Service
 public class UserServiceImpl implements UserService{
 
-    //Call UserRepository to implement service
-    private UserRepository userRepository;
+   //@Autowired
+   UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepositoryQuary){
+   //------ [Start: Or without Autowire annotation we can use this]------
+   //Call UserRepository to implement service
+
+   /*
+   private UserRepository userRepository;
+
+   public UserServiceImpl(UserRepository userRepositoryQuary){
       this.userRepository = userRepositoryQuary;
-    }
-    //---
+   }
+   */
+   //------ [End: Or without Autowire annotation we can use this]------
 
    //Implement methods in UserService interface
    @Override

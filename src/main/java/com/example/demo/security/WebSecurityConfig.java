@@ -27,18 +27,22 @@ public class WebSecurityConfig {
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
 
+    //Spring Bean annotation is usually declared in Configuration classes methods.
+    //Configuring a basic userDetailsService bean
     @Bean
     public UserDetailsService userDetailsService() {
         return userDetailsService;
     }
     //---
 
+    //Configuring a basic authenticationJwtTokenFilter bean
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter();
     }
     //---
 
+    //Configuring a basic authenticationProvider bean
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -50,18 +54,21 @@ public class WebSecurityConfig {
     }
     //---
 
+    //Configuring a basic passwordEncoder bean
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
     //---
 
+    // Configuring authenticationManager bean with constructor injection
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
     //---
 
+    // Configuring filterChain bean with constructor injection
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors().and().csrf(csrf -> csrf.disable())
@@ -69,7 +76,8 @@ public class WebSecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth ->
                 auth.requestMatchers("/auth/***").permitAll()
-                .requestMatchers("/uploads/***").permitAll()
+                .requestMatchers("/book/***").permitAll()
+                .requestMatchers("/category/***").permitAll()
                 .anyRequest().authenticated()
             );
 
